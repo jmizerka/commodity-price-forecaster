@@ -109,7 +109,11 @@ with st.sidebar:
 
     run_btn = st.button("🚀 Run Forecast", type="primary",
                         use_container_width=True)
-
+    
+    st.sidebar.caption("Data cached for 1 hour")
+    if st.sidebar.button("🔄 Clear Data Cache"):
+       st.cache_data.clear()
+       st.rerun()
 # ═══════════════════════════════════════════════════════════════════════════════
 #  HEADER
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -310,6 +314,13 @@ with tabs[1]:
                          f"Upper {confidence}% CI"]
         fc_df = fc_df.round(2)
         st.dataframe(fc_df, use_container_width=True)
+        csv_str = fc_df.reset_index().rename(columns={"index": "Date"}).to_csv(index=False)
+        st.download_button(
+            label="⬇️ Download Forecast CSV",
+            data=csv_str,
+            file_name=f"{commodity_name}_forecast.csv",
+            mime="text/csv",
+        )
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  TAB 2 — WEATHER OVERLAY
